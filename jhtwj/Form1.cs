@@ -10,8 +10,8 @@ using System.IO;
 using System.Net;
 using System.Diagnostics;
 using ZXing;
-using static System.Windows.Forms.LinkLabel;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace jhtwj
 {
@@ -443,19 +443,16 @@ namespace jhtwj
             var paths = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
             string fileName = Path.GetFileName(paths);
 
-
-
             List<string> ipAddressList = GetLocalIpAddresses();
 
             string ipAddress = ipAddressList.FirstOrDefault(); // 获取列表中的第一个 IP 地址
 
             if (ipAddress != null)
             {
-                //linkLabel1.Text = link;
-                //linkLabel1.Visible = true;
-
-                //System.Diagnostics.Process.Start(linkLabel1.Text);
-                Clipboard.SetText("下载链接："+ linkLabel1.Text + "\n--本文件由ipv6传送器分享");
+                //urlcode
+                string linkText = linkLabel1.Text;
+                string encodedLink = Regex.Replace(linkText, @"[\u4e00-\u9fa5]+", m => Uri.EscapeDataString(m.Value));
+                Clipboard.SetText("下载链接：" + encodedLink + "\n--本文件由ipv6传送器分享");
             }
             else
             {
