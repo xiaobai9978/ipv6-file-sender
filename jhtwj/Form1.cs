@@ -789,7 +789,13 @@ namespace jhtwj
 
         private void label2_Click(object sender, EventArgs e)
         {
-            CheckForUpdates();
+            DialogResult result = MessageBox.Show("是否连接 GitHub 以查找更新?", "提示", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                // 用户点击了是，执行相应的函数
+                CheckForUpdates();
+            }
+            
         }
     }
 
