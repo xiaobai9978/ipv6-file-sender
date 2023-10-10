@@ -42,6 +42,7 @@
             this.picQrCode = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ipv6 = new System.Windows.Forms.Label();
+            this.update = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picQrCode)).BeginInit();
             this.SuspendLayout();
             // 
@@ -99,7 +100,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(185, 308);
+            this.label1.Location = new System.Drawing.Point(179, 308);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 5;
@@ -114,11 +115,12 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(254, 308);
+            this.label2.Location = new System.Drawing.Point(249, 308);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(29, 12);
+            this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 6;
-            this.label2.Text = "v0.4";
+            this.label2.Text = "v0.0.0";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
@@ -131,7 +133,7 @@
             // 
             // picQrCode
             // 
-            this.picQrCode.Location = new System.Drawing.Point(181, 201);
+            this.picQrCode.Location = new System.Drawing.Point(187, 201);
             this.picQrCode.Name = "picQrCode";
             this.picQrCode.Size = new System.Drawing.Size(100, 100);
             this.picQrCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -147,11 +149,15 @@
             this.ipv6.TabIndex = 9;
             this.ipv6.Text = "ipv6";
             // 
+            // update
+            // 
+            this.update.Popup += new System.Windows.Forms.PopupEventHandler(this.update_Popup);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 328);
+            this.ClientSize = new System.Drawing.Size(294, 328);
             this.Controls.Add(this.ipv6);
             this.Controls.Add(this.picQrCode);
             this.Controls.Add(this.label3);
@@ -188,6 +194,7 @@
         private System.Windows.Forms.PictureBox picQrCode;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label ipv6;
+        private System.Windows.Forms.ToolTip update;
     }
 }
 

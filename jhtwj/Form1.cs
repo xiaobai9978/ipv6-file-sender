@@ -13,6 +13,8 @@ using ZXing;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
+
+
 namespace jhtwj
 {
 
@@ -23,8 +25,9 @@ namespace jhtwj
     public partial class Form1 : Form
     {
         private HttpListener listener;
+        private string currentVersion;
         private string selectedFilePath;
-
+        private const string ReleasesUrl = "https://github.com/xiaobai9978/ipv6-file-sender/releases";
 
 
         // 导入Windows API函数
@@ -53,22 +56,26 @@ namespace jhtwj
         private IntPtr notepadHandle;
 
 
+        public FileDropHandler FileDroper; //全局的
+
         public Form1()
         {
             InitializeComponent();
+
+            currentVersion = GetAssemblyVersion();
         }
 
-
-
-
-        public FileDropHandler FileDroper; //全局的
         private void Form1_Load(object sender, EventArgs e)
         {
+            update.SetToolTip(label2, "点击检查更新");
+            //MessageBox.Show(GetAssemblyVersion());
+            label2.Text = GetAssemblyVersion().Substring(0, GetAssemblyVersion().Length - 2);
+
 
             //检测IPv6地址
             if (HasIpv6Address())
             {
-                ipv6.Text  ="IPV6连通成功";
+                ipv6.Text = "IPV6连通成功";
                 ipv6.ForeColor = Color.Green;
                 //有IPv6地址
             }
@@ -76,7 +83,7 @@ namespace jhtwj
             {
                 ipv6.Text = "IPV6连通失败";
 
-                ipv6.ForeColor = Color.Red ;
+                ipv6.ForeColor = Color.Red;
                 //没有IPv6地址
             }
 
@@ -108,7 +115,10 @@ namespace jhtwj
                 //MessageBox.Show("未找到江河窗口！");
                 timer1.Stop();
             }
+
         }
+
+
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -702,5 +712,113 @@ namespace jhtwj
         }
 
 
+        private void CheckForUpdates()
+        {
+            try
+            {
+                WebClient client = new WebClient();
+                string releasesPage = client.DownloadString(ReleasesUrl);
+
+                // 解析 releasesPage 的内容以获取更新信息
+                // 这里使用正则表达式来查找版本号
+                // 要求版本号以 "v0." 开头，后面可以是任意数字和点号组合
+                Regex regex = new Regex(@"v0.\d+(.\d+)*");
+                MatchCollection matches = regex.Matches(releasesPage);
+                if (matches.Count > 0)
+                {
+                    string latestVersion = matches[0].Value;
+                    //MessageBox.Show(latestVersion);
+                    if (IsNewVersionAvailable(latestVersion))
+                    {
+                        DialogResult result = MessageBox.Show("发现新版本："+ latestVersion + "  是否前往下载更新？", "更新提示", MessageBoxButtons.OKCancel);
+                        if (result == DialogResult.OK)
+                        {
+                            // 打开指定的URL链接
+                            System.Diagnostics.Process.Start(ReleasesUrl);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本,无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("未找到版本号。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+
+
+
+
+
+
+
+        private bool IsNewVersionAvailable(string latestVersion)
+        {
+            // 在这里编写判断是否有新版本可用的逻辑
+            // 可以比较 latestVersion 与当前安装的版本号，或者将版本号转换为数字进行比较等
+            return string.Compare(latestVersion, currentVersion) > 0;
+        }
+
+        private string GetAssemblyVersion()
+        {
+            // 获取当前程序集的版本号
+            Version version = typeof(Form1).Assembly.GetName().Version;
+            return "v" + version.ToString();
+        }
+
+
+
+
+
+        private void update_Popup(object sender, PopupEventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            CheckForUpdates();
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
