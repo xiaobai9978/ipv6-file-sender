@@ -315,6 +315,7 @@ namespace jhtwj
 
             generateLinkButton.PerformClick();
 
+            label3.Text = "点击蓝色链接复制";
         }
 
 
@@ -330,6 +331,7 @@ namespace jhtwj
                 //MessageBox.Show("拒绝选择文件夹！");
 
                 label3.Text = "   ";
+
                 return;
             }
 
@@ -469,7 +471,8 @@ namespace jhtwj
                 // 处理找不到符合条件的 IP 地址的情况
             }
             linkLabel1.Text = "已复制";
-            label3.Visible = false;
+
+            label3.Text = " ";
         }
 
 
