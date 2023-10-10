@@ -742,7 +742,7 @@ namespace jhtwj
                     }
                     else
                     {
-                        MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本,无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本，无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
