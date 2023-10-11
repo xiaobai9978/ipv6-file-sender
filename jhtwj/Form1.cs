@@ -802,17 +802,14 @@ namespace jhtwj
                 string releasesPage = client.DownloadString(ReleasesUrl);
 
                 // 解析 releasesPage 的内容以获取更新信息
-                // 这里使用正则表达式来查找版本号
-                // 要求版本号以 "v0." 开头，后面可以是任意数字和点号组合
-                Regex regex = new Regex(@"v0.\d+(.\d+)*");
-                MatchCollection matches = regex.Matches(releasesPage);
-                if (matches.Count > 0)
+                // 查找最新版本号
+                string latestVersion = FindLatestVersion(releasesPage);
+
+                if (!string.IsNullOrEmpty(latestVersion))
                 {
-                    string latestVersion = matches[0].Value;
-                    //MessageBox.Show(latestVersion);
                     if (IsNewVersionAvailable(latestVersion))
                     {
-                        DialogResult result = MessageBox.Show("发现新版本："+ latestVersion + "  是否前往下载更新？", "更新提示", MessageBoxButtons.OKCancel);
+                        DialogResult result = MessageBox.Show("发现新版本：" + latestVersion + "  是否前往下载更新？", "更新提示", MessageBoxButtons.OKCancel);
                         if (result == DialogResult.OK)
                         {
                             // 打开指定的URL链接
@@ -833,11 +830,21 @@ namespace jhtwj
             {
                 MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
+        private string FindLatestVersion(string releasesPage)
+        {
+            string pattern = @"<a href=""/[^""]+/releases/tag/(v\d+(\.\d+)+)""";
+            Regex regex = new Regex(pattern);
+            Match match = regex.Match(releasesPage);
 
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
 
+            return null;
+        }
 
 
 
