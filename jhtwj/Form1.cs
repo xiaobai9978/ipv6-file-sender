@@ -12,6 +12,12 @@ using System.Diagnostics;
 using ZXing;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+
+
+
 
 
 
@@ -28,6 +34,9 @@ namespace jhtwj
         private string currentVersion;
         private string selectedFilePath;
         private const string ReleasesUrl = "https://github.com/xiaobai9978/ipv6-file-sender/releases";
+        private readonly HttpClient _client = new HttpClient();
+        public bool IsPortOpen2 { get; private set; } = true;
+
 
 
         // 导入Windows API函数
@@ -58,6 +67,13 @@ namespace jhtwj
 
         public FileDropHandler FileDroper; //全局的
 
+
+
+        string ipv6lable1 = "无 IPV6 连通";
+        string ipv6lable2 = "IPV6 获取成功,端口检测中...";
+        string ipv6lable3 = "IPV6 端口测试:成功";
+        string ipv6lable4 = "IPV6 端口测试:失败";
+
         public Form1()
         {
             InitializeComponent();
@@ -65,27 +81,13 @@ namespace jhtwj
             currentVersion = GetAssemblyVersion();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
             update.SetToolTip(label2, "点击检查更新");
+            ipv6tip.SetToolTip(ipv6, "双方均支持ipv6才可以公网传输");
             //MessageBox.Show(GetAssemblyVersion());
             label2.Text = GetAssemblyVersion().Substring(0, GetAssemblyVersion().Length - 2);
 
-
-            //检测IPv6地址
-            if (HasIpv6Address())
-            {
-                ipv6.Text = "IPV6连通成功";
-                ipv6.ForeColor = Color.Green;
-                //有IPv6地址
-            }
-            else
-            {
-                ipv6.Text = "IPV6连通失败";
-
-                ipv6.ForeColor = Color.Red;
-                //没有IPv6地址
-            }
 
             int portNumber = 11166; // 要检测的端口号
 
@@ -100,8 +102,56 @@ namespace jhtwj
                 FirewallControl.OpenPort(11166);
             }
 
+
             FileDroper = new FileDropHandler(selectFileButton); //初始化
             StartServer();
+
+
+
+
+            // 检测IPv6地址
+            if (HasIpv6Address())
+            {
+                ipv6.Text = ipv6lable2;
+                ipv6.ForeColor = Color.Blue;
+                // 有IPv6地址
+
+                // 创建 PortScanner 实例
+                PortScanner portScanner = new PortScanner();
+
+                // 调用异步方法并等待结果
+                string portOpenStatus = await portScanner.IsPortOpenAsync(GetIpv6Address(), "", "11166");
+                //MessageBox.Show(portOpenStatus);
+                if (portOpenStatus == "ok")
+                {
+                    IsPortOpen2 = true;
+                    ipv6.Text = ipv6lable3;
+                    ipv6.ForeColor = Color.Green;
+                }
+                else if (portOpenStatus == "fail")
+                {
+                    IsPortOpen2 = false;
+                    ipv6.Text = ipv6lable4;
+                    ipv6.ForeColor = Color.Red;
+                }
+                else
+                {
+                    ipv6.Text = "IPV6 获取成功,检测网站失效..";
+                    ipv6.ForeColor = Color.Brown;
+                }
+            }
+            else
+            {
+                ipv6.Text = ipv6lable1;
+                ipv6.ForeColor = Color.Red;
+                // 没有IPv6地址
+            }
+
+
+
+
+
+
 
             EnumWindows(new EnumWindowsProc(EnumWindowsCallback), IntPtr.Zero);
 
@@ -321,6 +371,7 @@ namespace jhtwj
 
         private void generateLinkButton_Click(object sender, EventArgs e)
         {
+
             if (Directory.Exists(selectedFilePath))
             {
                 // 如果 selectedFilePath 是文件夹路径，显示拒绝的提示弹窗
@@ -336,7 +387,7 @@ namespace jhtwj
             }
 
             string fileName = Path.GetFileName(selectedFilePath);
-            List<string> ipAddressList = GetLocalIpAddresses();
+            List<string> ipAddressList = GetLocalIpAddresses(IsPortOpen2);
 
             string ipAddress = ipAddressList.FirstOrDefault(); // 获取列表中的第一个 IP 地址
 
@@ -386,49 +437,53 @@ namespace jhtwj
 
         }
 
-        private List<string> GetLocalIpAddresses()
+        private List<string> GetLocalIpAddresses(bool IsPortOpen2)
         {
             List<string> ipAddressList = new List<string>();
             IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
-
-            // 首先查找以 "2" 开头的 IPv6 地址
-            foreach (IPAddress ipAddress in hostEntry.AddressList)
+            // 查找以 "2" 开头的 IPv6 地址
+            if (IsPortOpen2)
             {
-                if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                foreach (IPAddress ipAddress in hostEntry.AddressList)
                 {
-                    string ipAddressString = ipAddress.ToString();
-                    if (ipAddressString.StartsWith("2"))
+                    if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     {
-                        ipAddressList.Add(ipAddressString);
+                        string ipAddressString = ipAddress.ToString();
+                        if (ipAddressString.StartsWith("2"))
+                        {
+                            ipAddressList.Add(ipAddressString);
+                        }
                     }
                 }
             }
-
-            // 首先查找以 "10.1." 开头的 IP 地址
-            foreach (IPAddress ipAddress in hostEntry.AddressList)
+            else
             {
-                if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                {
-                    string ipAddressString = ipAddress.ToString();
-                    if (ipAddressString.StartsWith("10.1."))
-                    {
-                        ipAddressList.Add(ipAddressString);
-                    }
-                }
-            }
-
-            // 如果找不到以 "10.1." 开头的 IP 地址，则查找以 "10." 开头的 IP 地址
-            if (ipAddressList.Count == 0)
-            {
+                // 查找以 "10.1." 开头的 IP 地址
                 foreach (IPAddress ipAddress in hostEntry.AddressList)
                 {
                     if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
                         string ipAddressString = ipAddress.ToString();
-                        if (ipAddressString.StartsWith("10."))
+                        if (ipAddressString.StartsWith("10.1."))
                         {
                             ipAddressList.Add(ipAddressString);
+                        }
+                    }
+                }
+
+                // 如果找不到以 "10.1." 开头的 IP 地址，则查找以 "10." 开头的 IP 地址
+                if (ipAddressList.Count == 0)
+                {
+                    foreach (IPAddress ipAddress in hostEntry.AddressList)
+                    {
+                        if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            string ipAddressString = ipAddress.ToString();
+                            if (ipAddressString.StartsWith("10."))
+                            {
+                                ipAddressList.Add(ipAddressString);
+                            }
                         }
                     }
                 }
@@ -450,12 +505,19 @@ namespace jhtwj
         }
 
 
+
+
+
+
+
+
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var paths = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
             string fileName = Path.GetFileName(paths);
 
-            List<string> ipAddressList = GetLocalIpAddresses();
+            List<string> ipAddressList = GetLocalIpAddresses(IsPortOpen2);
 
             string ipAddress = ipAddressList.FirstOrDefault(); // 获取列表中的第一个 IP 地址
 
@@ -714,6 +776,23 @@ namespace jhtwj
             return false;
         }
 
+        private string GetIpv6Address()
+        {
+            IPHostEntry entry = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (IPAddress ip in entry.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetworkV6 &&
+                    ip.ToString().StartsWith("2"))
+                {
+                    return ip.ToString();
+                }
+            }
+
+            return string.Empty;
+        }
+
+
 
         private void CheckForUpdates()
         {
@@ -797,24 +876,94 @@ namespace jhtwj
             }
             
         }
+
+
+
+
+        public class PortScanner
+        {
+            public async Task<string> IsPortOpenAsync(string address, string portsSelected, string portsList)
+            {
+                try
+                {
+                    // 构建请求数据
+                    string postData = $"addr={Uri.EscapeDataString(address)}&ports_selected={Uri.EscapeDataString(portsSelected)}&ports_list={Uri.EscapeDataString(portsList)}";
+                    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+                    // 创建请求对象
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://ipv6.my-addr.com/online-ipv6-port-scan.php");
+                    request.Method = "POST";
+                    request.ContentType = "application/x-www-form-urlencoded";
+                    request.ContentLength = byteArray.Length;
+
+                    // 发送请求数据
+                    using (Stream dataStream = await request.GetRequestStreamAsync())
+                    {
+                        await dataStream.WriteAsync(byteArray, 0, byteArray.Length);
+                    }
+
+                    // 获取响应
+                    using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+                    {
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                string responseHtml = await reader.ReadToEndAsync();
+
+                                // 检查响应中是否包含检查通过的图标
+                                if (responseHtml.Contains("<td><img src='/img/fail.png' ></td>"))
+                                {
+                                    return "fail";
+                                }
+                                else if (responseHtml.Contains("<td><img src='/img/check_ok.png' ></td>"))
+                                {
+                                    return "ok";
+                                }
+                                else
+                                {
+                                    return "error";
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 处理异常情况
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                    return "error";
+                }
+            }
+        }
+
+        private void ipv6_Click(object sender, EventArgs e)
+        {
+            if (ipv6.Text == ipv6lable4)
+                MessageBox.Show("虽成功获取 IPV6 地址，但端口未通过测试，只可接收不可发送。\n请尝试关闭路由器 IPv6 Session 防火墙", ipv6lable4);
+        }
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

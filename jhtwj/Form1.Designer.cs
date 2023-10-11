@@ -43,6 +43,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.ipv6 = new System.Windows.Forms.Label();
             this.update = new System.Windows.Forms.ToolTip(this.components);
+            this.ipv6tip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picQrCode)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,7 +77,7 @@
             // 
             this.linkLabel1.Location = new System.Drawing.Point(12, 237);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(166, 54);
+            this.linkLabel1.Size = new System.Drawing.Size(158, 54);
             this.linkLabel1.TabIndex = 2;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
@@ -90,7 +91,7 @@
             // serverStatusLabel
             // 
             this.serverStatusLabel.AutoSize = true;
-            this.serverStatusLabel.Location = new System.Drawing.Point(8, 308);
+            this.serverStatusLabel.Location = new System.Drawing.Point(10, 345);
             this.serverStatusLabel.Name = "serverStatusLabel";
             this.serverStatusLabel.Size = new System.Drawing.Size(77, 12);
             this.serverStatusLabel.TabIndex = 4;
@@ -100,7 +101,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(181, 308);
+            this.label1.Location = new System.Drawing.Point(182, 319);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 5;
@@ -115,7 +116,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(249, 308);
+            this.label2.Location = new System.Drawing.Point(248, 319);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 6;
@@ -133,7 +134,7 @@
             // 
             // picQrCode
             // 
-            this.picQrCode.Location = new System.Drawing.Point(187, 201);
+            this.picQrCode.Location = new System.Drawing.Point(185, 212);
             this.picQrCode.Name = "picQrCode";
             this.picQrCode.Size = new System.Drawing.Size(100, 100);
             this.picQrCode.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -143,11 +144,12 @@
             // ipv6
             // 
             this.ipv6.AutoSize = true;
-            this.ipv6.Location = new System.Drawing.Point(91, 308);
+            this.ipv6.Location = new System.Drawing.Point(12, 319);
             this.ipv6.Name = "ipv6";
             this.ipv6.Size = new System.Drawing.Size(29, 12);
             this.ipv6.TabIndex = 9;
             this.ipv6.Text = "ipv6";
+            this.ipv6.Click += new System.EventHandler(this.ipv6_Click);
             // 
             // update
             // 
@@ -157,12 +159,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(294, 328);
+            this.ClientSize = new System.Drawing.Size(295, 340);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.ipv6);
             this.Controls.Add(this.picQrCode);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.serverStatusLabel);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.selectFileButton);
@@ -195,6 +197,7 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label ipv6;
         private System.Windows.Forms.ToolTip update;
+        private System.Windows.Forms.ToolTip ipv6tip;
     }
 }
 
