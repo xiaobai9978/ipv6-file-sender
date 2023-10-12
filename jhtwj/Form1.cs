@@ -121,7 +121,7 @@ namespace jhtwj
                 PortScanner portScanner = new PortScanner();
 
                 // 调用异步方法并等待结果
-                string portOpenStatus = await portScanner.IsPortOpenAsync(GetIpv6Address(), "", "112166");
+                string portOpenStatus = await portScanner.IsPortOpenAsync(GetIpv6Address(), "", "11166");
                 //MessageBox.Show(portOpenStatus);
                 if (portOpenStatus == "ok")
                 {
