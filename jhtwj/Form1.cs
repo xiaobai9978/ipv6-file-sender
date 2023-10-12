@@ -83,7 +83,7 @@ namespace jhtwj
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            CheckForUpdates();
+            updatemsg.Start();
             update.SetToolTip(label2, "点击检查更新");
             ipv6tip.SetToolTip(ipv6, "双方均支持ipv6才可以公网传输");
             //MessageBox.Show(GetAssemblyVersion());
@@ -773,7 +773,6 @@ namespace jhtwj
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -927,6 +926,7 @@ namespace jhtwj
                                 // 检查响应中是否包含检查通过的图标
                                 if (responseHtml.Contains("<td><img src='/img/fail.png' ></td>"))
                                 {
+
                                     return "fail";
                                 }
                                 else if (responseHtml.Contains("<td><img src='/img/check_ok.png' ></td>"))
@@ -937,6 +937,7 @@ namespace jhtwj
                                 {
                                     return "error";
                                 }
+
                             }
                         }
                     }
@@ -947,13 +948,21 @@ namespace jhtwj
                     Console.WriteLine("An error occurred: " + ex.Message);
                     return "error";
                 }
+
             }
+       
         }
 
         private void ipv6_Click(object sender, EventArgs e)
         {
             if (ipv6.Text == ipv6lable4)
                 MessageBox.Show("虽成功获取 IPV6 地址，但端口未通过测试，只可接收不可发送。\n请尝试关闭路由器 IPv6 Session 防火墙", ipv6lable4);
+        }
+
+        private void updatemsg_Tick(object sender, EventArgs e)
+        {
+            updatemsg.Stop();
+            CheckForUpdates();
         }
     }
 

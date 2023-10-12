@@ -44,6 +44,7 @@
             this.ipv6 = new System.Windows.Forms.Label();
             this.update = new System.Windows.Forms.ToolTip(this.components);
             this.ipv6tip = new System.Windows.Forms.ToolTip(this.components);
+            this.updatemsg = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picQrCode)).BeginInit();
             this.SuspendLayout();
             // 
@@ -155,6 +156,11 @@
             // 
             this.update.Popup += new System.Windows.Forms.PopupEventHandler(this.update_Popup);
             // 
+            // updatemsg
+            // 
+            this.updatemsg.Interval = 1000;
+            this.updatemsg.Tick += new System.EventHandler(this.updatemsg_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -198,6 +204,7 @@
         private System.Windows.Forms.Label ipv6;
         private System.Windows.Forms.ToolTip update;
         private System.Windows.Forms.ToolTip ipv6tip;
+        private System.Windows.Forms.Timer updatemsg;
     }
 }
 
