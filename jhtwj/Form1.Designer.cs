@@ -58,7 +58,7 @@
             this.selectFileButton.Name = "selectFileButton";
             this.selectFileButton.Size = new System.Drawing.Size(273, 109);
             this.selectFileButton.TabIndex = 0;
-            this.selectFileButton.Text = "选择文件\r\n\r\n（可拖拽）";
+            this.selectFileButton.Text = "选择文件\r\n\r\n（可拖放）";
             this.selectFileButton.UseVisualStyleBackColor = true;
             this.selectFileButton.Click += new System.EventHandler(this.selectFileButton_Click);
             this.selectFileButton.DragEnter += new System.Windows.Forms.DragEventHandler(this.selectFileButton_DragEnter);
