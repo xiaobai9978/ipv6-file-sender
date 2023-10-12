@@ -9,10 +9,3 @@
 若无 ipv6 则分享内网 ipv4 链接
 
 接收方点击下载链接或者扫码,即可直接下载文件
-
-<<<<<<< Updated upstream
-
-下载地址：https://gitee.com/xiaobai9978/ipv6-file-sender/releases
-=======
-下载地址：https://gitee.com/xiaobai9978/ipv6-file-sender/releases
->>>>>>> Stashed changes
