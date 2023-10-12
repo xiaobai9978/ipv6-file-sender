@@ -83,6 +83,7 @@ namespace jhtwj
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            CheckForUpdates();
             update.SetToolTip(label2, "点击检查更新");
             ipv6tip.SetToolTip(ipv6, "双方均支持ipv6才可以公网传输");
             //MessageBox.Show(GetAssemblyVersion());
@@ -818,7 +819,10 @@ namespace jhtwj
                     }
                     else
                     {
-                        MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本，无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (yhdj == true)
+                            MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本，无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else
+                            ;
                     }
                 }
                 else
@@ -872,13 +876,14 @@ namespace jhtwj
         {
 
         }
-
+        bool yhdj=false;
         private void label2_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("是否连接 Gitee 以查找更新?", "提示", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
                 // 用户点击了是，执行相应的函数
+                yhdj = true;
                 CheckForUpdates();
             }
             
