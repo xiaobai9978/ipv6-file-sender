@@ -121,7 +121,7 @@ namespace jhtwj
                 PortScanner portScanner = new PortScanner();
 
                 // 调用异步方法并等待结果
-                string portOpenStatus = await portScanner.IsPortOpenAsync(GetIpv6Address(), "", "11166");
+                string portOpenStatus = await portScanner.IsPortOpenAsync(GetIpv6Address(), "", "112166");
                 //MessageBox.Show(portOpenStatus);
                 if (portOpenStatus == "ok")
                 {
@@ -236,7 +236,7 @@ namespace jhtwj
 
                 context.Response.ContentType = mimeType;
 
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[16384];
                 int bytesRead;
 
                 while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
@@ -443,14 +443,18 @@ namespace jhtwj
             List<string> ipAddressList = new List<string>();
             IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
 
+            
+
             // 查找以 "2" 开头的 IPv6 地址
-            if (IsPortOpen2)
+            if (ipv6.Text == ipv6lable2 | ipv6.Text == ipv6lable3)
             {
                 foreach (IPAddress ipAddress in hostEntry.AddressList)
                 {
                     if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     {
                         string ipAddressString = ipAddress.ToString();
+
+                        //MessageBox.Show(ipAddressString);
                         if (ipAddressString.StartsWith("2"))
                         {
                             ipAddressList.Add(ipAddressString);
@@ -460,19 +464,35 @@ namespace jhtwj
             }
             else
             {
-                // 查找以 "10.1." 开头的 IP 地址
+                // 查找以 "10.1.5." 开头的 IP 地址
                 foreach (IPAddress ipAddress in hostEntry.AddressList)
                 {
                     if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
                         string ipAddressString = ipAddress.ToString();
-                        if (ipAddressString.StartsWith("10.1."))
+                        if (ipAddressString.StartsWith("10.1.5."))
                         {
                             ipAddressList.Add(ipAddressString);
                         }
                     }
                 }
 
+                // 如果找不到以 "10.1.5." 开头的 IP 地址，则查找以 "10.1." 开头的 IP 地址
+                if (ipAddressList.Count == 0)
+                {
+                    foreach (IPAddress ipAddress in hostEntry.AddressList)
+                    {
+                        if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        {
+                            string ipAddressString = ipAddress.ToString();
+                            if (ipAddressString.StartsWith("10.1."))
+                            {
+                                ipAddressList.Add(ipAddressString);
+                            }
+                        }
+                    }
+                }
+                
                 // 如果找不到以 "10.1." 开头的 IP 地址，则查找以 "10." 开头的 IP 地址
                 if (ipAddressList.Count == 0)
                 {

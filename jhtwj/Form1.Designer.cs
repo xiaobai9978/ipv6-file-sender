@@ -66,7 +66,7 @@
             // 
             // generateLinkButton
             // 
-            this.generateLinkButton.Location = new System.Drawing.Point(202, 78);
+            this.generateLinkButton.Location = new System.Drawing.Point(329, 88);
             this.generateLinkButton.Name = "generateLinkButton";
             this.generateLinkButton.Size = new System.Drawing.Size(68, 33);
             this.generateLinkButton.TabIndex = 1;
@@ -173,9 +173,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.serverStatusLabel);
             this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.selectFileButton);
             this.Controls.Add(this.filePathLabel);
             this.Controls.Add(this.generateLinkButton);
+            this.Controls.Add(this.selectFileButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
             this.Text = "ipv6文件传送 xiaobai.pro";
