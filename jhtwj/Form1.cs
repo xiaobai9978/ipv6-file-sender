@@ -364,9 +364,9 @@ namespace jhtwj
             selectedFilePath = paths[0];
             filePathLabel.Text = selectedFilePath;
 
-            generateLinkButton.PerformClick();
 
             label3.Text = "点击蓝色链接复制";
+            generateLinkButton.PerformClick();
         }
 
 
@@ -382,7 +382,6 @@ namespace jhtwj
                 picQrCode.Image = null;
                 //MessageBox.Show("拒绝选择文件夹！");
 
-                label3.Text = "   ";
 
                 return;
             }
