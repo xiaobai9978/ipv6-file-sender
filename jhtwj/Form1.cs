@@ -33,7 +33,7 @@ namespace jhtwj
         private HttpListener listener;
         private string currentVersion;
         private string selectedFilePath;
-        private const string ReleasesUrl = "https://github.com/xiaobai9978/ipv6-file-sender/releases";
+        private const string ReleasesUrl = "https://gitee.com/xiaobai9978/ipv6-file-sender/releases";
         private readonly HttpClient _client = new HttpClient();
         public bool IsPortOpen2 { get; private set; } = true;
 
@@ -832,11 +832,11 @@ namespace jhtwj
             }
         }
 
-        private string FindLatestVersion(string releasesPage)
+        private string FindLatestVersion(string html)
         {
-            string pattern = @"<a href=""/[^""]+/releases/tag/(v\d+(\.\d+)+)""";
+            string pattern = @"<span>\s*(v\d+(\.\d+)+)\s*</span>";
             Regex regex = new Regex(pattern);
-            Match match = regex.Match(releasesPage);
+            Match match = regex.Match(html);
 
             if (match.Success)
             {
@@ -875,7 +875,7 @@ namespace jhtwj
 
         private void label2_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("是否连接 GitHub 以查找更新?", "提示", MessageBoxButtons.YesNo);
+            DialogResult result = MessageBox.Show("是否连接 Gitee 以查找更新?", "提示", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
                 // 用户点击了是，执行相应的函数
@@ -917,7 +917,8 @@ namespace jhtwj
                             using (StreamReader reader = new StreamReader(responseStream))
                             {
                                 string responseHtml = await reader.ReadToEndAsync();
-
+                                //MessageBox.Show(responseHtml);
+                                //Clipboard.SetText(responseHtml);
                                 // 检查响应中是否包含检查通过的图标
                                 if (responseHtml.Contains("<td><img src='/img/fail.png' ></td>"))
                                 {
