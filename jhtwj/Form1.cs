@@ -167,6 +167,7 @@ namespace jhtwj
                 timer1.Stop();
             }
 
+
         }
 
 
@@ -308,23 +309,58 @@ namespace jhtwj
 
 
 
+        //private bool EnumWindowsCallback(IntPtr hWnd, IntPtr lParam)
+        //{
+        //    const int maxWindowTextLength = 256;
+        //    StringBuilder windowText = new StringBuilder(maxWindowTextLength);
+
+        //    // 获取窗口标题
+        //    GetWindowText(hWnd, windowText, maxWindowTextLength);
+
+        //    // 判断窗口标题是否匹配
+        //    if (windowText.ToString().Contains("个会话"))
+        //    {
+        //        notepadHandle = hWnd;
+        //        return false; // 停止枚举
+        //    }
+
+        //    return true; // 继续枚举
+        //}
+
+
+        [DllImport("user32.dll")]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         private bool EnumWindowsCallback(IntPtr hWnd, IntPtr lParam)
         {
+            const int maxWindowClassLength = 256;
+            const int maxWindowCaptionLength = 256;
             const int maxWindowTextLength = 256;
+            StringBuilder windowClass = new StringBuilder(maxWindowClassLength);
             StringBuilder windowText = new StringBuilder(maxWindowTextLength);
+            StringBuilder windowCaption = new StringBuilder(maxWindowCaptionLength);
 
+            // 获取窗口类名
+            GetClassName(hWnd, windowClass, maxWindowClassLength);
             // 获取窗口标题
-            GetWindowText(hWnd, windowText, maxWindowTextLength);
+            GetClassName(hWnd, windowText, maxWindowClassLength);
+            // 获取窗口船长
+            GetClassName(hWnd, windowCaption, maxWindowClassLength);
 
-            // 判断窗口标题是否匹配
-            if (windowText.ToString().Contains("个会话"))
+            //MessageBox.Show(windowCaption.ToString());
+            // 判断窗口类名是否匹配
+            if (windowClass.ToString().Contains("CIMMgr") | (windowCaption.ToString().Contains("Chrome_WidgetWin_1")& windowText.ToString().Contains("Chrome_WidgetWin_1")& windowClass.ToString().Contains("Chrome_WidgetWin_1")))
             {
+
                 notepadHandle = hWnd;
                 return false; // 停止枚举
             }
 
             return true; // 继续枚举
         }
+
+
+
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
