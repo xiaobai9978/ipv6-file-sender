@@ -307,51 +307,40 @@ namespace jhtwj
 
 
 
-
-
-        //private bool EnumWindowsCallback(IntPtr hWnd, IntPtr lParam)
-        //{
-        //    const int maxWindowTextLength = 256;
-        //    StringBuilder windowText = new StringBuilder(maxWindowTextLength);
-
-        //    // 获取窗口标题
-        //    GetWindowText(hWnd, windowText, maxWindowTextLength);
-
-        //    // 判断窗口标题是否匹配
-        //    if (windowText.ToString().Contains("个会话"))
-        //    {
-        //        notepadHandle = hWnd;
-        //        return false; // 停止枚举
-        //    }
-
-        //    return true; // 继续枚举
-        //}
-
-
         [DllImport("user32.dll")]
         static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+
+        private IntPtr targetWindowHandle = IntPtr.Zero;
+        private const int SWP_NOMOVE = 0x0002;
+        private const int SWP_NOSIZE = 0x0001;
+
+
         private bool EnumWindowsCallback(IntPtr hWnd, IntPtr lParam)
         {
             const int maxWindowClassLength = 256;
-            const int maxWindowCaptionLength = 256;
             const int maxWindowTextLength = 256;
             StringBuilder windowClass = new StringBuilder(maxWindowClassLength);
             StringBuilder windowText = new StringBuilder(maxWindowTextLength);
-            StringBuilder windowCaption = new StringBuilder(maxWindowCaptionLength);
 
             // 获取窗口类名
             GetClassName(hWnd, windowClass, maxWindowClassLength);
+
             // 获取窗口标题
-            GetClassName(hWnd, windowText, maxWindowClassLength);
-            // 获取窗口船长
-            GetClassName(hWnd, windowCaption, maxWindowClassLength);
+            GetWindowText(hWnd, windowText, maxWindowTextLength);
 
-            //MessageBox.Show(windowCaption.ToString());
             // 判断窗口类名是否匹配
-            if (windowClass.ToString().Contains("CIMMgr") | (windowCaption.ToString().Contains("Chrome_WidgetWin_1")& windowText.ToString().Contains("Chrome_WidgetWin_1")& windowClass.ToString().Contains("Chrome_WidgetWin_1")))
+            if (windowClass.ToString().Contains("imwnd") || windowClass.ToString().Contains("CIMMgr") || (windowClass.ToString().Contains("Chrome_WidgetWin_1") && windowText.ToString().Contains("江河")))
             {
-
+                //MessageBox.Show(windowClass.ToString());
+                // 保存目标窗口句柄
                 notepadHandle = hWnd;
+                targetWindowHandle = notepadHandle;
+                //MessageBox.Show(targetWindowHandle.ToString());
+
                 return false; // 停止枚举
             }
 
@@ -361,19 +350,27 @@ namespace jhtwj
 
 
 
-
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (notepadHandle != IntPtr.Zero)
+            //MessageBox.Show(targetWindowHandle.ToString());
+
+            if (targetWindowHandle != IntPtr.Zero)
             {
+                
                 // 获取记事本窗口的位置信息
-                if (GetWindowRect(notepadHandle, out RECT rect))
+                if (GetWindowRect(targetWindowHandle, out RECT rect))
                 {
                     // 更新本窗口的位置
                     Location = new System.Drawing.Point(rect.Left - 300, rect.Top);
+                    // 将当前窗口设置为目标窗口的上层
+                    SetWindowPos(Handle, targetWindowHandle, rect.Left - 300, rect.Top, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
                 }
             }
         }
+
+
+
+
 
         private void selectFileButton_Click(object sender, EventArgs e)
         {
