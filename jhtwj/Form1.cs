@@ -878,12 +878,14 @@ namespace jhtwj
                 }
                 else
                 {
-                    MessageBox.Show("未找到版本号。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (yhdj == true)
+                        MessageBox.Show("未找到版本号。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (yhdj == true)
+                    MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
