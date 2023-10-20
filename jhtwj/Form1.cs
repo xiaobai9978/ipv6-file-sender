@@ -377,10 +377,11 @@ namespace jhtwj
 
         private void selectFileButton_Click(object sender, EventArgs e)
         {
+            timer1.Stop();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "选择文件";
             openFileDialog.Filter = "所有文件|*.*";
-
+            
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 selectedFilePath = openFileDialog.FileName;
@@ -391,7 +392,7 @@ namespace jhtwj
             }
 
             generateLinkButton.PerformClick();
-
+            timer1.Start();
         }
 
         private void selectFileButton_DragEnter(object sender, DragEventArgs e)
