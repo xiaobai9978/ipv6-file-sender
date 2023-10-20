@@ -83,6 +83,9 @@ namespace jhtwj
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             updatemsg.Start();
             update.SetToolTip(label2, "点击检查更新");
             ipv6tip.SetToolTip(ipv6, "双方均支持ipv6才可以公网传输");
@@ -861,7 +864,7 @@ namespace jhtwj
                 {
                     if (IsNewVersionAvailable(latestVersion))
                     {
-                        DialogResult result = MessageBox.Show("发现新版本：" + latestVersion + "  是否前往下载更新？", "更新提示", MessageBoxButtons.OKCancel);
+                        DialogResult result = MessageBox.Show("发现新版本：" + latestVersion + "  是否前往下载更新？", "更新提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                         if (result == DialogResult.OK)
                         {
                             // 打开指定的URL链接
@@ -871,7 +874,7 @@ namespace jhtwj
                     else
                     {
                         if (yhdj == true)
-                            MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本，无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("云端最新版本：" + latestVersion + "  已是最新版本，无需更新。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                         else
                             ;
                     }
@@ -879,13 +882,13 @@ namespace jhtwj
                 else
                 {
                     if (yhdj == true)
-                        MessageBox.Show("未找到版本号。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("未找到版本号。", "更新提示", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
                 }
             }
             catch (Exception ex)
             {
                 if (yhdj == true)
-                    MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("检查更新时发生错误：" + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             }
         }
 
@@ -932,7 +935,7 @@ namespace jhtwj
         bool yhdj=false;
         private void label2_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("是否连接 Gitee 以查找更新?", "提示", MessageBoxButtons.YesNo);
+            DialogResult result = MessageBox.Show("是否连接 Gitee 以查找更新?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
             if (result == DialogResult.Yes)
             {
                 // 用户点击了是，执行相应的函数
@@ -1010,7 +1013,7 @@ namespace jhtwj
         private void ipv6_Click(object sender, EventArgs e)
         {
             if (ipv6.Text == ipv6lable4)
-                MessageBox.Show("虽成功获取 IPV6 地址，但端口未通过测试，只可接收不可发送。\n请尝试关闭路由器 IPv6 Session 防火墙", ipv6lable4);
+                MessageBox.Show("虽成功获取 IPV6 地址，但端口未通过测试，只可接收不可发送。\n请尝试关闭路由器 IPv6 Session 防火墙", ipv6lable4, MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
         }
 
         private void updatemsg_Tick(object sender, EventArgs e)
