@@ -185,7 +185,21 @@ namespace jhtwj
             listener = new HttpListener();
             listener.Prefixes.Add("http://*:11166/"); // 设置监听的URL，*表示监听所有可用IP地址和端口11166
 
-            listener.Start();
+            try
+            {
+
+                    listener.Start();
+
+            }
+            catch
+            {
+                // 忽略HttpListener异常
+                MessageBox.Show("请勿重复打开本软件！" , "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                Process.GetCurrentProcess().Kill();
+            }
+
+
+
 
             serverStatusLabel.Text = "服务器已启动";
             serverStatusLabel.ForeColor = System.Drawing.Color.Green;
@@ -443,6 +457,7 @@ namespace jhtwj
                 }
 
                 linkLabel1.Text = link;
+                linkLabel1.LinkColor = System.Drawing.Color.Blue;
                 linkLabel1.Visible = true;
             }
             else
@@ -582,16 +597,17 @@ namespace jhtwj
             {
                 //urlcode
                 string linkText = linkLabel1.Text;
-                string encodedLink = Regex.Replace(linkText, @"[\u4e00-\u9fa5]+", m => Uri.EscapeDataString(m.Value));
-                Clipboard.SetText("下载链接：" + encodedLink + "\n--本文件由ipv6传送器分享");
+                string encodedLink = Regex.Replace(linkText, @"[\u4e00-\u9fa5\u3000-\u303f\uff01-\uff5e]+", m => Uri.EscapeDataString(m.Value));
+                Clipboard.SetText("下载链接：" + encodedLink + "\n--此由文件传送器分享");
             }
             else
             {
                 // 处理找不到符合条件的 IP 地址的情况
             }
-            linkLabel1.Text = "已复制";
+            label3.Text = "*下载链接已复制至剪切板*";
+            linkLabel1.LinkColor= System.Drawing.Color.Green;
 
-            label3.Text = " ";
+            //label3.Text = " ";
         }
 
 
@@ -763,7 +779,17 @@ namespace jhtwj
             selectedFilePath = paths;
             filePathLabel.Text = selectedFilePath;
             generateLinkButton.PerformClick();
-            Clipboard.SetText(linkLabel1.Text);
+
+
+            // 创建一个 LinkLabelLinkClickedEventArgs 对象
+            var args = new LinkLabelLinkClickedEventArgs(linkLabel1.Links[0]);
+
+            // 调用 protected 方法 LinkLabel.OnLinkClicked 方法
+            typeof(LinkLabel).GetMethod("OnLinkClicked", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(linkLabel1, new object[] { args });
+
+
+            //Clipboard.SetText(linkLabel1.Text);
             label1.Text = "已复制";
 
             timer2.Interval = 5000;

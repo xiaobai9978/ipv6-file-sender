@@ -178,7 +178,7 @@
             this.Controls.Add(this.selectFileButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
-            this.Text = "ipv6文件传送 xiaobai.pro";
+            this.Text = "文件传送器 --xiaobai.pro";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picQrCode)).EndInit();
